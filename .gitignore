@@ -1,7 +1,8 @@
 #local setting
 .venv_CI
 .env
+.vscode
 
 
-
+##Local files
 theory.md
