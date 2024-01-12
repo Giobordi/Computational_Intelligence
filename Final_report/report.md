@@ -34,17 +34,33 @@ def actual_cost2(state : State) :
 To verify the correctness of the algorithm, at the bottom of the file `A_star.ipynb` there is the breadth-first search algorithm, to check if the solution found by the A* algorithm is the optimal one.
 
 ## Halloween Challenge: 
+I've implemented 4 different algorithms to solve the Halloween Challenge.The fitness function used for all the algorithms is called `covering_and_num_sets` and it returns the number covered elements and the number of sets used to evaluate a state.
+- **Random Hill Climbing** : I've implemented two *tweaks* function `tweak_hill_climbing` and `tweak_hill_climbing_exploration`, the only difference is that the second one tweaks more elements of the state (it is more explorative). The stopping condition is the number of iterations equal to `ceil(num_points/2)`. 
+
+- **Simulated Annealing** :  the *tweak* function is called `tweak_simulated_annealing` and the function `simulated_annealing` apply the main idea of this approach, accepting a worse state with a probability that decreases with the number of iterations (the temperature increase following the formula $temperature * (coolingRate^{iteration})$).The stopping condition is the number of iterations equal to `ceil(num_points/2)`.
+
+- **Tabu search** : the *tweak* function is called `tweak_tabu_search` and each new state is added to a list of tabu states `tabu_list` updated at each iteration. The stopping condition is the number of iterations equal to `ceil(num_points/2)`.
 
 
-**Laboratory 2** 
+- **Iterated Local Search** : the *tweak* function is called `tweak_iterated_local` and in the algorithm the condiction to apply the `new_starting_position` (that is the random restart when the algorithm is stuck in a local optimum)  is that for `ceil(set_threashold/10)` time the new state is not better than the previous one. Even in this case the stopping condition is the number of iterations equal to `ceil(num_points/2)`.
 
-Peer review received: 
+The results of the algorithms are shown in the following table:
+<figure>
+    <img src="images_report/Halloween_challenge.JPG"  width="auto" height="auto">
+</figure>
+
+These results have been shared also in the Telegram group before the deadline.
+
+
+## Laboratory 2 
+
+Peer reviews received: 
 <figure>
     <img src="images_report/prR01_l02.png" alt="Image Description">
     <figcaption>pair review by Alessandro Chiabodo S309234</figcaption>
 </figure>
 
-Peer review given: 
+Peer reviews given: 
 <div>
 <figure>
 <img src="images_report/prG01_l02.png" alt="Image Description">
@@ -59,7 +75,7 @@ Peer review given:
 
 **Laboratory 9** 
 
-Peer review received: 
+Peer reviews received: 
 <div>
 <figure>
   <img src="images_report/prR01_l09.png" alt="Image Description">
@@ -76,7 +92,7 @@ Peer review received:
 <div>
 
 
-Peer review given: 
+Peer reviews given: 
 <div>
 <figure>
   <img src="images_report/prG01_l09.png" alt="Image Description">
@@ -94,7 +110,7 @@ Peer review given:
 
 **Laboratory 10** 
 
-Peer review given: 
+Peer reviews given: 
 <div>
 <figure>
   <img src="images_report/prG01_l10.png" alt="Image Description">
