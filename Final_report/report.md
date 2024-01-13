@@ -1,5 +1,5 @@
 ## Report Computational Intelligence 2023/2024
-Giovanni Bordero s313010
+Giovanni Bordero s313010 
 
 ## Laboratory 1: Set cover problem using A* algorithm
 
@@ -44,7 +44,7 @@ I've implemented 4 different algorithms to solve the Halloween Challenge.The fit
 
 - **Iterated Local Search** : the *tweak* function is called `tweak_iterated_local` and in the algorithm the condiction to apply the `new_starting_position` (that is the random restart when the algorithm is stuck in a local optimum)  is that for `ceil(set_threashold/10)` time the new state is not better than the previous one. Even in this case the stopping condition is the number of iterations equal to `ceil(num_points/2)`.
 
-The results of the algorithms are shown in the following table:
+The best result obtained are shown in the following table:
 <figure>
     <img src="images_report/Halloween_challenge.JPG"  width="auto" height="auto">
 </figure>
@@ -52,42 +52,67 @@ The results of the algorithms are shown in the following table:
 These results have been shared also in the Telegram group before the deadline.
 
 
-## Laboratory 2 
+## Laboratory 2  : Nim game using EA 
+The goal was to implement an Evolutionary Algorithm to play the game Nim.
+
+- I've implemented two version of an ES, the first version using a *plus* strategy (function `evolutionary_strategies`) and at each iteration choosing between crossover and mutation; the a second version uses a *comma* strategy (function `evolutionary_strategies_comma`) and at each iteration choosing between crossover and mutation. For both strategies there are different mutation functions, `mutation(indiv: list, state :Nim)`, a individual is mutated by changing the number of elements to substract from the heap, `mutation2(indiv: list, state :Nim)` the number of element to subtract from the from the heap is equal to the max-1 .  The 'parent selection' is done using the function `tournament_selection(population : list, k :int, sorted_population : int)` and the 'crossover' is done using the function `crossover(ind_one : list, ind_two : list, state : Nim)` where the two parents are crossed by taking the row from the first individual and the elements to substract from the second individual (checking if it is valid,else try the opposite but even this operation is not possible return the first individual). The 'survivor selection' is done sorting the population by fitness and then selecting the best `population_size` individuals.
+
+This apporach is based on the nim-sum as the fitness function , that it was not to be used. So I've implemented a new version of the ES.
+
+
+- In the second version, the `class Rule` defines a possible rule (like the nim-sum) and has a weight that represent the importance of this rule, the default value is 0.5 and it is updated during the evaluation process. The ES agent is represented by the `class EsNimAgent` that has a list of rules, the number of games played and the number of games won. The move is selected based on the weight, if there are no possible moves the move is selected randomly. 
+
+  Some important function for the initialization are:
+
+    - `all_possible_moves()` : returns all the possible moves for a Nim game
+    - `condition_for_rule()` : returns alla the possible condition for the rule class
+    - `global_set_rules()` : associate all the conditions to all the possible moves
+    - `create_population()` : creates a population of NimAgent with random rules
+
+  ES main function : 
+    - `mutation()` : change the rules inside an agent.
+    - `one_cut_cross_over()` : it crosses two agents by taking the first part of the first agent and the second part of the second agent
+    - `survival_selection()` : it selects the best agents based on the fitness
+    - `tournament_selection()` : the best agent between a 'tournament_size' number of agents, the competition is based on the fitness
+    - `generate_new_generation()` : it is the function that create a new generation (offspring) applying the mutation and the crossover and the tournament selection.
+    - `ES()` : it is the function that start the ES, each agent do a number of games equal to the 'number_of_games' parameter with the 3 different opponents (optimal, pure_random and gabriele) and update the weights of the rule based on win/lose. The main approach is a 'plus' approach, the new generation is added to the old one and the best agents are selected, the number of new agents created is equal to the number of agents in the old generation. At the end of the entire process the agent with the best fitness is returned
+
+At the end of the notebook there are different configurations of the ES, trying to tune the parameters to obtain the best result against the optimal agent that take advantage of the *nim-sum heuristic*. 
 
 Peer reviews received: 
 <figure>
-    <img src="images_report/prR01_l02.png" alt="Image Description">
-    <figcaption>pair review by Alessandro Chiabodo S309234</figcaption>
+    <img src="images_report/prR01_l02.png" width="600" height="300">
+    <figcaption>pair review by Alessandro Chiabodo S309234 on Nov 23, 2023</figcaption>
 </figure>
 
 Peer reviews given: 
 <div>
 <figure>
-<img src="images_report/prG01_l02.png" alt="Image Description">
-<figcaption>pair review to Beatrice Occhiena s314971</figcaption>
+<img src="images_report/prG01_l02.png" width="600" height="auto">
+<figcaption>pair review to Beatrice Occhiena s314971 on Nov 23, 2023</figcaption>
 </figure>
 <figure>
-<img src="images_report/prG02_l02.png" alt="Image Description">
-<figcaption>pair review to Alessandro Chiabodo S309234</figcaption>
+<img src="images_report/prG02_l02.png" width="600" height="auto">
+<figcaption>pair review to Alessandro Chiabodo S309234 on Nov 23, 2023</figcaption>
 </figure>
 </div>
 
 
-**Laboratory 9** 
+## Laboratory 9 : Problem instances 1,2,5,10 on a 1000-loci genome using EA
 
 Peer reviews received: 
 <div>
 <figure>
-  <img src="images_report/prR01_l09.png" alt="Image Description">
-  <figcaption>pair review by Edoardo Franco s310228</figcaption>
+  <img src="images_report/prR01_l09.png" width="600" height="auto">
+  <figcaption>pair review by Edoardo Franco s310228 on Dec 8, 2023</figcaption>
 </figure>
 <figure>
-  <img src="images_report/prR02_l09.png" alt="Image Description">
-  <figcaption>pair review by Andrea Panuccio s294603</figcaption>
+  <img src="images_report/prR02_l09.png" width="600" height="auto">
+  <figcaption>pair review by Andrea Panuccio s294603 on Dec 10, 2023</figcaption>
 </figure>
 <figure>
-  <img src="images_report/prR03_l09.png" alt="Image Description">
-  <figcaption>pair review by Hossein Kakavand s313884</figcaption>
+  <img src="images_report/prR03_l09.png" width="600" height="auto">
+  <figcaption>pair review by Hossein Kakavand s313884 on Dec 10, 2023</figcaption>
 </figure>
 <div>
 
@@ -95,13 +120,13 @@ Peer reviews received:
 Peer reviews given: 
 <div>
 <figure>
-  <img src="images_report/prG01_l09.png" alt="Image Description">
-  <figcaption>pair review to Edoardo Franco s310228</figcaption>
+  <img src="images_report/prG01_l09.png" width="600" height="auto">
+  <figcaption>pair review to Edoardo Franco s310228 on Dec 10, 2023</figcaption>
 </figure>
 
 <figure>
-  <img src="images_report/prG02_l09.png" alt="Image Description">
-  <figcaption>pair review to Andrea Panuccio s294603</figcaption>
+  <img src="images_report/prG02_l09.png" width="600" height="auto">
+  <figcaption>pair review to Andrea Panuccio s294603 on Dec 10, 2023</figcaption>
 </figure>
 
 
@@ -113,13 +138,13 @@ Peer reviews given:
 Peer reviews given: 
 <div>
 <figure>
-  <img src="images_report/prG01_l10.png" alt="Image Description">
-  <figcaption>pair review to Miriam Ivaldi s309062</figcaption>
+  <img src="images_report/prG01_l10.png" width="600" height="auto">
+  <figcaption>pair review to Miriam Ivaldi s309062 on 5 Gen, 2024</figcaption>
 </figure>
 
 <figure>
-  <img src="images_report/prG02_l10.png" alt="Image Description">
-  <figcaption>pair review to Luca Solaini s306033</figcaption>
+  <img src="images_report/prG02_l10.png" width="600" height="auto">
+  <figcaption>pair review to Luca Solaini s306033 on 5 Gen, 2024</figcaption>
 </figure>
 
 </div>
