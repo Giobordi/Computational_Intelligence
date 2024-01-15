@@ -100,6 +100,58 @@ Peer reviews given:
 
 ## Laboratory 9 : Problem instances 1,2,5,10 on a 1000-loci genome using EA
 
+I developed a Genetic Algorithm to manage this problem. \
+I decided to use a 'plus' strategy, so the offspring will be added to the population, the selection is made with a tournament selection approach and the size of the tournament is self-adapted based on the performance of the algorithm and even the mutation probability is self-adapted. The main idea is to evaluate the fitness on subchunks of the genome, saving the fitness value of each subchunk (avoiding to recompute it if it is already computed due the fact the fitness function is costly, the variable are `SUB_CHUNKS_SAVED` `SUB_FITNESS_SAVED`), trying to maximize the fitness of each subchunk (the dimension of the subchunk is equal to 2*instance). The crossover is made by taking the best subchunk between the two parents, this is done for each subchunk of the genome. \
+
+Initial settings
+```python 
+POP_SIZE = 100  ## the population size is quite small because we are trying to minimize the number of fitness calls
+OFFSPRING_SIZE =  20 
+LOCI = 1000
+MUTATION_RATE = 0.7  ## the mutation rate is quite high at the beginning because we want to explore the space
+GENERATIONS = 1000
+TOURNAMENT_SIZE = 30 ## the tournament size is quite big at the beginning because we want to select the best individual 
+INCREASING_THRESHOLD = 0.01 ## the threshold to evaluate if the performance is increasing enough
+MUTATION_MODIFIER = 0.03 ## the modifier to increase or decrease the mutation rate
+TOURNAMENT_MODIFIER = 2 ## the modifier to increase or decrease the tournament size
+ADAMPTABILITY = 10 ## the number of generations to evaluate the performance
+MUTATION_DIVIDER = 100 
+```
+
+Function for self adaptation
+
+```python 
+def adaptive_tournament_size(adaptation : list[float], tournament_size : int) -> int : 
+  #.....
+
+def adaptive_mutation_rate(adaptation : list[float], mutation_rate : float) -> float : 
+  #.....
+```
+Function for the evolution
+```python 
+def tournament_selection(population : list[Individual], tournament_size : int) -> list:
+    tournament = choices(population, k=tournament_size)
+    return max(tournament, key=lambda ind: ind.fitness)
+
+def uniform_sub_chuncks_crossover(parent1 : Individual, parent2 : Individual) -> Individual:
+    genome = []
+    for i in range(len(parent1.sub_chunks)):
+        if parent1.fitness_chunk[i] >= parent2.fitness_chunk[i]:
+            genome += parent1.sub_chunks[i]
+        else:
+            genome += parent2.sub_chunks[i]
+    return Individual(genome=genome,fit=fitness(genome),k=K)
+
+def mutate_sub_chuncks(ind : Individual, mutation_rate : float):
+    ind = deepcopy(ind)
+    for i in range(len(ind.sub_chunks)):
+        if ind.fitness_chunk[i] < 1.0:
+            indice = randint(0, len(ind.sub_chunks[i]) - 1) 
+            ind.sub_chunks[i][indice] = 1-ind.sub_chunks[i][indice]  ###flip one bit tryin to improve the fitness   
+            ind.fitness_chunk[i] = ind.chunk_fitness_alredy_computed(i)
+    ind.fitness = sum(ind.fitness_chunk) / len(ind.fitness_chunk)
+    return ind
+```
 Peer reviews received: 
 <div>
 <figure>
