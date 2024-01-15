@@ -1,4 +1,23 @@
-## Report Computational Intelligence 2023/2024
+def update_Q_value(self, state, action: int, reward):
+        '''
+        Update the Q value of the policy (state, action) using the reward.
+        Thi function check the symmetry of the state and update the value of the state adding the reward weighted by the epsilon value.
+        '''
+        st = (frozenset(state.x), frozenset(state.o))
+
+        policy = (st, action)
+        policy_90 = rotate_state_90_right(policy)
+        policy_180 = rotate_state_90_right(policy_90)
+        policy_270 = rotate_state_90_right(policy_180)
+
+        if policy_90 in self.Q:
+            self.Q[policy_90] = self.get_Q_value(state, action) + self.epsilon * (reward - self.get_Q_value(state, action))
+        elif policy_180 in self.Q:
+            self.Q[policy_180] = self.get_Q_value(state, action) + self.epsilon * (reward - self.get_Q_value(state, action))
+        elif policy_270 in self.Q:
+            self.Q[policy_270] = self.get_Q_value(state, action) + self.epsilon * (reward - self.get_Q_value(state, action))
+        else:
+            self.Q[policy] = self.get_Q_value(state, action) + self.epsilon * (reward - self.get_Q_value(state, action))## Report Computational Intelligence 2023/2024
 Giovanni Bordero s313010 
 
 ## Laboratory 1: Set cover problem using A* algorithm
@@ -185,7 +204,57 @@ Peer reviews given:
 </div>
 
 
-**Laboratory 10** 
+## Laboratory 10 : Tic Tac Toe with reinforcement learning
+
+Collaboration with Edoardo Franco s310228. \
+The algorithm is based on the Q-learning algorithm and the agent (`ReinforcedPlayer class`) learns from playing a number of games equal to the variable `TRAINING_EPOCHS`, agains a random player.The reward is +1 if the agent wins, -3 if the agent loses and -1 if the game ends in a draw. These values has been chosen after some testing, tuning them to get the best results.\
+To reduce the dimension of the Q-table, the agent expoit the symmetry of the game, so it learns only specific pairs state-action. To exploit the symmetry the indexes of the Tic-Tac-Toe board follow a spiral order to easily manage the rotations and the symmetries.
+The state is composed by two sets, the first one contains the indexes of the Xs and the second one contains the indexes of the Os and the action that is the index of the cell to fill.\
+The training process consists in playing `self.training_epochs` games against a random agent, at each iteration the agent updates the Q-table based on the pairs state-action saved in the trajectory.\
+To avoid retraining the agent every time, there are two function `save_model` and `load_model` to save and load the ReinforcedPlayer object in a pickle file.\
+To test the performance of the agent, at the end of the training process, the agent plays `NUM_TEST_GAMES` games against the random agent. 
+
+Symmetry functions
+
+```python 
+def rotate_90_right(value):
+    if value < 6:
+        new_value = value + 2
+    elif 6 <= value <= 7:
+        new_value = value - 6
+    else:
+        new_value = value
+    return new_value
+
+
+def rotate_state_90_right(policy: tuple[tuple[frozenset, frozenset], int]) -> tuple[tuple[frozenset, frozenset], int]:
+    state, action = policy
+    rotated_x = set([rotate_90_right(value) for value in state[0]])
+    rotated_o = set([rotate_90_right(value) for value in state[1]])
+    rotated_action = rotate_90_right(action)
+
+    return (frozenset(rotated_x), frozenset(rotated_o)), rotated_action
+```
+
+Function that update the Q-table
+```python
+def update_Q_value(self, state, action: int, reward):
+    st = (frozenset(state.x), frozenset(state.o))
+
+    policy = (st, action)
+    policy_90 = rotate_state_90_right(policy)
+    policy_180 = rotate_state_90_right(policy_90)
+    policy_270 = rotate_state_90_right(policy_180)
+
+    if policy_90 in self.Q:
+        self.Q[policy_90] = self.get_Q_value(state, action) + self.epsilon * (reward - self.get_Q_value(state, action))
+    elif policy_180 in self.Q:
+        self.Q[policy_180] = self.get_Q_value(state, action) + self.epsilon * (reward - self.get_Q_value(state, action))
+    elif policy_270 in self.Q:
+        self.Q[policy_270] = self.get_Q_value(state, action) + self.epsilon * (reward - self.get_Q_value(state, action))
+    else:
+        self.Q[policy] = self.get_Q_value(state, action) + self.epsilon * (reward - self.get_Q_value(state, action))
+```
 
 Peer reviews given: 
 <div>
@@ -224,3 +293,6 @@ Peer reviews given:
 
 The presentation is about the Tic Tac Toe games and the reinforcement learning algorithm used to train the agent. 
 The main topic is the difference between a simple Agent (trained using a traditional Monte Carlo approach) and an agent that exploits the symmetry of the game board.
+
+
+## Exam project : Quixo game 
