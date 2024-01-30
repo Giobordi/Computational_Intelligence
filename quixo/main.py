@@ -30,7 +30,9 @@ def play_game(tmp : tuple) -> int :
 
 if __name__ == '__main__':
     
-    player_with_RL = SpeedUpSymmetryAgent(agents_number=8, trainig_period=15000).training()
+
+    #player_with_RL = load_model("./quixo/models/agent-mixed_addedmirror_8_agents_10000_for_agent.pkl");
+    player_with_RL = SpeedUpSymmetryAgent(agents_number=8, trainig_period=50).training()
     
     #min_max_player = SymmetryMinMaxPlayer()
 
